@@ -36,6 +36,17 @@ export class List<T = unknown> {
     }
   }
 
+  indexOf(node: Node<T>): number {
+    let index = 0;
+    for (let current = this.head; current; current = current.next) {
+      if (current === node) {
+        return index;
+      }
+      index++;
+    }
+    return -1;
+  }
+
   removeNode(node: Node<T>) {
     const next = node.next;
     const prev = node.prev;

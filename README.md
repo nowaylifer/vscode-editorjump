@@ -7,6 +7,7 @@ This extension contributes the following commands:
 - `editorjump.navigateForward`: Navigate forward in jump history.
 - `editorjump.navigateBack`: Navigate backward in jump history.
 - `editorjump.clearJumplist`: Clear jump history.
+- `editorjump.showJumplist`: Show the current jumplist in the output channel.
 
 ## Extension Settings
 

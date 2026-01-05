@@ -40,6 +40,10 @@
       {
         "command": "editorjump.clearJumplist",
         "title": "EditorJump: Clear Jumplist"
+      },
+      {
+        "command": "editorjump.showJumplist",
+        "title": "EditorJump: Show Jumplist (Debug)"
       }
     ]
   },

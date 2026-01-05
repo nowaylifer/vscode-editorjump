@@ -100,6 +100,35 @@ export class Jumplist {
     this.cursor = undefined;
   }
 
+  getCurrentPosition(): number {
+    if (!this.cursor) {
+      return -1;
+    }
+    return this.list.indexOf(this.cursor);
+  }
+
+  getDebugInfo(): {
+    total: number;
+    position: number;
+    canGoBack: boolean;
+    canGoForward: boolean;
+    items: Array<{ uri: vscode.Uri; isCurrent: boolean }>;
+  } {
+    const position = this.getCurrentPosition();
+    const items = this.list.toArray((node) => ({
+      uri: node.value,
+      isCurrent: node === this.cursor,
+    }));
+
+    return {
+      total: this.list.length,
+      position: position >= 0 ? position + 1 : 0, // 1-based for display
+      canGoBack: this.cursor?.prev !== undefined,
+      canGoForward: this.cursor?.next !== undefined,
+      items,
+    };
+  }
+
   async handleRenameFiles(renames: ReadonlyArray<{ readonly oldUri: vscode.Uri; readonly newUri: vscode.Uri }>) {
     this.renaming = true;
     await Promise.all(renames.map(this.renameFile, this));
