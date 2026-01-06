@@ -22,11 +22,13 @@ export class Jumplist {
   }
 
   push(uri: vscode.Uri) {
-    if (this.navigating || this.cursor?.value.path === uri.path) {
+    const uriString = uri.toString();
+
+    if (this.navigating || this.cursor?.value.toString() === uriString) {
       return;
     }
 
-    const node = this.list.findNode((node) => node.value.path === uri.path);
+    const node = this.list.findNode((node) => node.value.toString() === uriString);
     if (node) {
       this.list.removeNode(node);
     }
@@ -46,44 +48,31 @@ export class Jumplist {
   }
 
   async jumpForward() {
-    if (this.navigating || this.renaming) {
-      return;
-    }
-
-    let node = this.cursor?.next;
-
-    while (node) {
-      try {
-        this.navigating = true;
-        await vscode.window.showTextDocument(node.value);
-        this.cursor = node;
-        break;
-      } catch {
-        const tmp = node;
-        node = node.next;
-        this.list.removeNode(tmp);
-      }
-    }
-
-    this.navigating = false;
+    return this.jump(true);
   }
 
   async jumpBack() {
+    return this.jump();
+  }
+
+  private async jump(isForward = false) {
     if (this.navigating || this.renaming) {
       return;
     }
+    this.navigating = true;
 
-    let node = this.cursor?.prev;
+    const key = isForward ? "next" : "prev";
+
+    let node = this.cursor?.[key];
 
     while (node) {
       try {
-        this.navigating = true;
         await vscode.window.showTextDocument(node.value);
         this.cursor = node;
         break;
       } catch {
         const tmp = node;
-        node = node.prev;
+        node = node[key];
         this.list.removeNode(tmp);
       }
     }
@@ -127,6 +116,29 @@ export class Jumplist {
       canGoForward: this.cursor?.next !== undefined,
       items,
     };
+  }
+
+  remove(uri: vscode.Uri) {
+    const uriString = uri.toString();
+    const node = this.list.findNode((node) => node.value.toString() === uriString);
+    if (!node) {
+      return;
+    }
+
+    if (this.list.length === 1) {
+      this.list.removeNode(node);
+      this.cursor = undefined;
+      return;
+    }
+
+    if (node === this.cursor) {
+      const next = node.next ?? node.prev;
+      this.list.removeNode(node);
+      this.cursor = next;
+      return;
+    }
+
+    this.list.removeNode(node);
   }
 
   async handleRenameFiles(renames: ReadonlyArray<{ readonly oldUri: vscode.Uri; readonly newUri: vscode.Uri }>) {

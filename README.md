@@ -14,6 +14,7 @@ This extension contributes the following commands:
 This extension contributes the following settings:
 
 - `editorjump.jumplistLength`: The maximum number of files to remember in jump history (default is 20).
+- `editorjump.removeOnClose`: If enabled, removes a file from the jumplist when it is closed (default is false).
 
 ## Release Notes
 

@@ -6,7 +6,7 @@
   "repository": {
     "url": "https://github.com/nowaylifer/editorjump"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -25,6 +25,11 @@
           "type": "number",
           "default": 20,
           "description": "The maximum number of files to remember in jump history"
+        },
+        "editorjump.removeOnClose": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remove files from jumplist when they are closed"
         }
       }
     },

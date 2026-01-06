@@ -9,6 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
   const getActiveEditorUri = () => vscode.window.activeTextEditor?.document.uri;
 
   const maxLength = getExtensionConfig<number>("jumplistLength");
+  const removeOnClose = getExtensionConfig<boolean>("removeOnClose");
   const jumplist = new Jumplist(getActiveEditorUri(), { maxLength });
 
   context.subscriptions.push(
@@ -18,6 +19,16 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+
+  if (removeOnClose) {
+    context.subscriptions.push(
+      vscode.workspace.onDidCloseTextDocument((document) => {
+        if (document.uri) {
+          jumplist.remove(document.uri);
+        }
+      })
+    );
+  }
 
   context.subscriptions.push(
     vscode.workspace.onWillRenameFiles((e) => e.waitUntil(jumplist.handleRenameFiles(e.files)))
